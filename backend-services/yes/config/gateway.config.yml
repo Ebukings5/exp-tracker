@@ -1,0 +1,66 @@
+http:
+  port: 8080
+
+admin:
+  port: 9876
+
+apiEndpoints:
+  users:
+    host: localhost
+    paths: /users/*
+  expenses:
+    host: localhost
+    paths: /expenses/*
+  incomes:
+    host: localhost
+    paths: /incomes/*
+  savings:
+    host: localhost
+    paths: /savings/*
+
+serviceEndpoints:
+  userService:
+    url: http://localhost:5001
+  expenseService:
+    url: http://localhost:5002
+  incomeService:
+    url: http://localhost:5003
+  savingsService:
+    url: http://localhost:5004
+
+policies:
+  - proxy
+  - rate-limit
+
+pipelines:
+  userPipeline:
+    apiEndpoints:
+      - users
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: userService
+
+  expensePipeline:
+    apiEndpoints:
+      - expenses
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: expenseService
+
+  incomePipeline:
+    apiEndpoints:
+      - incomes
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: incomeService
+
+  savingsPipeline:
+    apiEndpoints:
+      - savings
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: savingsService
