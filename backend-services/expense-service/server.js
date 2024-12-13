@@ -16,6 +16,11 @@ app.use(bodyParser.json());
 // Routes
 app.use('/expenses', expenseRoutes);
 
+// Start endpoint
+app.get('/', (req, res) => {
+  res.send('Expense Service is up and running!');
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`Expense Service running on http://localhost:${PORT}`);
