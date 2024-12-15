@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  express-gateway:
+    image: express-gateway
+    build: ./express-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - bank-service
+      - expense-service
+      - budget-service
+
+  bank-service:
+    build: ./bank-service
+    ports:
+      - "5001:5001"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=bank_service_db
+
+  expense-service:
+    build: ./expense-service
+    ports:
+      - "5002:5002"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=expense_db
+
+  budget-service:
+    build: ./budget-service
+    ports:
+      - "5003:5003"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=budget_db
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
