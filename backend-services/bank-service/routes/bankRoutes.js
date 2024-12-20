@@ -1,15 +1,10 @@
-// /bank-service/routes/bankRoutes.js
 const express = require('express');
+const { getBanks } = require('../controllers/bankController');
+const { listBanks } = require('../controllers/paystackController');
+
 const router = express.Router();
-const bankController = require('../controllers/bankController');
 
-// Route to create a new transaction
-router.post('/transactions', bankController.createTransaction);
-
-// Route to initiate payment
-router.post('/pay', bankController.initiatePayment);
-
-// Route to verify payment
-router.post('/verify', bankController.verifyPayment);
+router.get('/', getBanks);
+router.get('/paystack', listBanks);
 
 module.exports = router;

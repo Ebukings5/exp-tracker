@@ -1,31 +1,21 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const http = require('http');
-const { Server } = require('socket.io');
+const db = require('./utils/db');
+const bankRoutes = require('./routes/bankRoutes');
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
-const PORT = process.env.PORT || 5000;
-
-// Middleware
 app.use(express.json());
-app.use(cors());
+app.use('/api/bank', bankRoutes);
 
-// Basic route
-app.get('/', (req, res) => {
-  res.send('Bank Service is running...');
+const port = process.env.PORT || 5001;
+
+db.connect(err => {
+    if (err) {
+        console.log('Unable to connect to database');
+        process.exit(1);
+    }
+    console.log('Connected to database');
+    app.listen(port, () => console.log(`Bank service listening on port ${port}!`));
 });
 
-// Socket.io connection
-io.on('connection', (socket) => {
-  console.log('A user connected');
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
-});
-
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.get('/', (req, res) => res.send('Bank Service Running'));

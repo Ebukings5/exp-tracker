@@ -1,20 +1,20 @@
-# Use the official Node.js image as the base
+# Use Node.js 20 image
 FROM node:20
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /bank-service
 
-# Copy the package.json and package-lock.json
 COPY package*.json ./
 
-# Install the dependencies
 RUN npm install
 
-# Copy the rest of the application code
 COPY . .
 
-# Expose the port on which the app will run
-EXPOSE 5002
+RUN apt-get update && apt-get install -y netcat-openbsd
 
-# Run the app
-CMD ["node", "server.js"]
+COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+
+RUN chmod +x /usr/local/bin/wait-for-it.sh
+
+EXPOSE ${PORT}
+
+CMD ["wait-for-it.sh", "db", "3306", "--", "npm", "start"]
